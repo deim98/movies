@@ -1,0 +1,26 @@
+movie_api/
+│
+├── app/
+│   ├── __init__.py
+│   ├── main.py
+│   ├── models.py
+│   ├── schemas.py
+│   ├── database.py
+│   ├── auth.py
+│   ├── crud.py
+│   ├── endpoints/
+│   │   ├── __init__.py
+│   │   ├── users.py
+│   │   ├── movies.py
+│   │   ├── comments.py
+│   │   ├── ratings.py
+│
+├── tests/
+│   ├── __init__.py
+│   ├── test_users.py
+│   ├── test_movies.py
+│   ├── test_comments.py
+│   ├── test_ratings.py
+│
+├── requirements.txt
+├── README.md

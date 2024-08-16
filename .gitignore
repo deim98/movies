@@ -1,0 +1,40 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+venv/
+.venv/
+
+# Environment variables
+.env
+*.env
+
+# Local SQLite database files
+*.sqlite3
+
+# Log files
+*.log
+
+# IDE and editor settings
+.idea/
+.vscode/
+*.swp
+
+# Testing artifacts
+.coverage
+coverage/
+*.cover
+*.lcov
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+*.egg
+*.whl
+
+# Operating system files
+.DS_Store
+Thumbs.db
