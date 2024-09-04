@@ -5,6 +5,7 @@ from app import schema
 from app.database import get_db
 from app.auth import create_access_token, authenticate_user, get_current_user
 from app import auth, crud
+from typing import List
 
 router = APIRouter()
 
@@ -21,9 +22,12 @@ def read_movie(movie_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Movie not found")
     return db_movie
 
-@router.get("/", response_model=list[schema.Movie])
-def read_movies(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
-    return crud.get_movies(db=db)
+@router.get("/", response_model=List[schema.Movie])
+def read_movies(movie_id: int, db: Session = Depends(get_db)):
+    movies= crud.get_movies(db, movie_id)
+    
+    return movies
+    
 
 @router.put("/{movie_id}", response_model=schema.Movie)
 def update_movie(movie_id: int, movie: schema.MovieCreate, db: Session = Depends(get_db), current_user: schema.User = Depends(auth.get_current_user)):

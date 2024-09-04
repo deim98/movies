@@ -10,6 +10,7 @@ from app.endpoints import users, ratings, comments, movies
 from app.models import User, Movie, Comment, Rating 
 # import sentry_sdk
 from app.logger import get_logger
+from typing import List
 
 logger = get_logger(__name__)
 
@@ -63,19 +64,19 @@ def login(
 @app.get("/movies/")
 def get_movies(
     db: Session = Depends(get_db),
-    offset: int = 0,
-    limit: int = 10,
+    movie_id= int
 ):
-    logger.info(f'Getting movies for ...')
-    movies = crud.get_movies(db, offset=offset, limit=limit)
-    logger.info(f'Movies gotten successfully.')
-    return {"message": "success", "data": movies}
+    movies = crud.get_movies(db,movie_id)
+    return movies
 
 @app.get("/movie/{movie_id}", response_model=schema.Movie)
 def get_movie(movie_id: int, db: Session = Depends(get_db)):
+    logger.info(f'Getting movie with ID: {movie_id}')
     movie = crud.get_movie(db, movie_id)
     if not movie:
+        logger.error(f'Movie with ID {movie_id} not found.')
         raise HTTPException(status_code=404, detail="Movie not found")
+    logger.info(f'Movie with ID {movie_id} retrieved successfully.')
     return movie
 
 @app.post("/movies", response_model=schema.Movie)

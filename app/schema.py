@@ -54,7 +54,7 @@ class CommentCreate(CommentBase):
 class Comment(CommentBase):
     id: int
     movie_id: int
-    user_id: int
+    user_id: Optional[int]
     replies: List['Comment'] = []
     
     model_config= ConfigDict(from_attributes=True)
@@ -73,3 +73,7 @@ class Rating(RatingBase):
     user_id: int
     
     model_config= ConfigDict(from_attributes=True)
+    
+# Handle forward references for self-referencing models
+Movie.model_rebuild()
+Comment.model_rebuild()

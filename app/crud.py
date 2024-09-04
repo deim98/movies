@@ -22,10 +22,19 @@ def create_user(db: Session, user: schema.UserCreate, hashed_password: str):
 
 #Movies
 def get_movie(db: Session, movie_id: int):
-    return db.query(models.Movie).filter(models.Movie.id == movie_id).first()
+    movie = db.query(models.Movie).filter(models.Movie.id == movie_id).first()
+    if movie:
+        # Ensure all fields are populated correctly
+        for comment in movie.comments:
+            if comment.user_id is None:
+                comment.user_id = 0  # or another default value, depending on your use case
+        return movie
+    return None
 
-def get_movies(db: Session, skip: int = 0, limit: int = 10):
-    return db.query(models.Movie).offset(skip).limit(limit).all()
+
+def get_movies(db: Session, movie_id:int):
+    """Fetch a list of movies with pagination support."""
+    return db.query(models.Movie).filter(models.Movie.id==movie_id).all()
 
 def create_movie(db: Session, movie: schema.MovieCreate, user_id: int):
     db_movie = models.Movie(title= movie.title,description=movie.description, user_id=user_id)
@@ -61,11 +70,21 @@ def create_comment(db: Session, comment: schema.CommentCreate, movie_id: int, us
 
 #fetching comments with nested replies
 def get_comments(db: Session, movie_id: int, skip: int = 0, limit: int = 10):
-    return db.query(models.Comment).filter(models.Comment.movie_id == movie_id).offset(skip).limit(limit).all()
+    comments = db.query(models.Comment).filter(models.Comment.movie_id == movie_id).offset(skip).limit(limit).all()
+    # Optionally, exclude the replies field or limit the depth
+    for comment in comments:
+        comment.replies = []  # or implement logic to limit the depth of replies
+    return comments
 
 #get comment by ID
-def get_comment(db: Session, comment_id: int):
-    return db.query(models.Comment).filter(models.Comment.id == comment_id).first()
+def get_comment(db: Session, comment_id: int, depth: int = 1):
+    comment = db.query(models.Comment).filter(models.Comment.id == comment_id).first()
+    if comment:
+        # Limit the depth of replies based on the 'depth' parameter
+        if depth > 1:
+            for reply in comment.replies:
+                reply.replies = []  # or recursively call get_comment_with_replies with depth-1
+    return comment
 
 
 #Ratings
